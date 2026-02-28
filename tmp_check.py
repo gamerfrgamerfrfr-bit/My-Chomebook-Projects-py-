@@ -3,7 +3,7 @@ import shutil
 import os
 
 # --- 1. Settings & Colors ---
-BLUE = "\033[94m"
+BLUE = "\033[R94m"
 RED = "\033[91m"
 END = "\033[0m"
 
@@ -30,10 +30,10 @@ def get_uptime():
 
 def get_temp():
     try:
-        # Most Chromebooks use zone0 or zone1 for CPU temp
+        
         with open('/sys/class/thermal/thermal_zone0/temp', 'r') as f:
             temp_raw = f.read().strip()
-        return int(temp_raw) // 1000  # Returns as integer (e.g., 34)
+        return int(temp_raw) // 1000
     except:
         return 0
 
@@ -54,22 +54,22 @@ def draw_bar(current, total, width=20):
 # --- 3. Main Loop ---
 
 while True:
-    # Gather Data
+    
     cpu = get_cpu_model()
     uptime = get_uptime()
     temp_num = get_temp()
     
-    # RAM Calculations
+    
     with open('/proc/meminfo', 'r') as f:
         lines = f.readlines()
     total_kb = int(lines[0].split()[1])
     free_kb = int(lines[1].split()[1])
     used_kb = total_kb - free_kb
     
-    # Disk Calculations
+    
     d_used, d_total = get_disk_usage()
     
-    # Logic for Temperature Status
+    
     if temp_num > 70:
         status = f"{RED}HOT! 🔥{END}"
     elif temp_num > 50:
@@ -77,7 +77,7 @@ while True:
     else:
         status = f"{BLUE}COOL ❄️{END}"
 
-    # Clear screen and Print Dashboard
+    
     print("\033[H\033[J") 
     print("--- CHROMEBOOK DASHBOARD ---")
     print(f"CPU:    {cpu}")
