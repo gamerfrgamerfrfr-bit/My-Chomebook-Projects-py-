@@ -1,3 +1,0 @@
-5000,0,1,0,0
-Thermometer:1000,EMF:1000,Camera:1000,Spirit Box:1000
-Meds:9000
