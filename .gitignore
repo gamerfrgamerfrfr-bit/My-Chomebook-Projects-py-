@@ -1,2 +1,14 @@
 venv/
 __pycache__/
+
+# Protect my 2FA and recovery codes
+codes.txt
+get_code.py
+use_code.py
+
+# Protect all hidden secret files
+.secrets/
+.gh_recovery
+
+# Protect any file ending in .gpg (encrypted files)
+*.gpg

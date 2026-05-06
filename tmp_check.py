@@ -36,7 +36,7 @@ def get_latency():
         if "time=" in output:
             return float(output.split("time=")[1].split(" ")[0])
     except: return None
-
+                                                # The "8.8.8.8" is pinging google's IP 
 def get_battery():
     # Looks for any battery folder (BAT0, BAT1, etc.)
     base_path = "/sys/class/power_supply/"
@@ -96,16 +96,17 @@ try:
         print(f"{YELLOW}{BOLD}--- CHROMEBOOK ULTIMATE DASHBOARD ---{END}")
         print(f"{GREEN} CPU:    {get_cpu_model()}{END}")
         print(f"{CYAN} UPTIME: {get_uptime()}{END}")
-        print(f"{BLUE} NET:    {net_status}{END}")
+        print(f"{BLUE} NET:    {net_status} (Ping){END}")
         print(f"{YELLOW} BATT:   {bat}{END}")
         print(f"{MAGENTA} TEMP:   {END}{WHITE}{temp_num}°C{END}")
         print(f" RAM:    {draw_bar(used_kb, total_kb)} {WHITE}({used_kb//1024}MB){END}")
         print(f" STRESS: {draw_bar(s_used, s_total)} {WHITE}(Swap){END}")
         print(f" DISK:   {draw_bar(d_used, d_total)} {WHITE}({d_used//(1024**3)}GB){END}")
-        print(f"{YELLOW}---------------------------------------{END}")
+        print(f"{YELLOW}{BOLD}---------------------------------------{END}")
         print(f"{BOLD}{RED}Press Ctrl+C to exit{END}")
         
         time.sleep(2)
 
 except KeyboardInterrupt:
     print(f"\n{GREEN}Dashboard closed. Great session, Bob!{END}")
+    
