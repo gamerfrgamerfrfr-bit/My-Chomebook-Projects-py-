@@ -3,7 +3,7 @@ import os
 import random
 import string
 import base64
-import time
+import subprocess
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
@@ -34,14 +34,21 @@ def save_all_passwords(cipher, lines):
         f.write(encrypted)
 
 def generate_password(length=16):
-    # Mix of Uppercase, Lowercase, Numbers, and Symbols
     chars = string.ascii_letters + string.digits + "!@#$%^&*"
     return ''.join(random.choice(chars) for _ in range(length))
+
+def copy_to_clipboard(text):
+    try:
+        process = subprocess.Popen(['xclip', '-selection', 'clipboard'], stdin=subprocess.PIPE)
+        process.communicate(input=text.encode())
+        return True
+    except FileNotFoundError:
+        return False
 
 def main():
     os.system('clear')
     print("="*45)
-    print("      🔐 BOB'S PASSWORD VAULT")
+    print("      🔐 BOB'S STEALTH PASSWORD VAULT")
     print("="*45)
     
     master_pw = input("🔑 Enter Master Password: ")
@@ -50,8 +57,8 @@ def main():
 
     while True:
         print("\n" + "-"*45)
-        print("1. [Generate] Create a new password")
-        print("2. [View]     See all saved passwords")
+        print("1. [Generate] Create & Copy new password")
+        print("2. [Select]   Pick account to Copy to clipboard")
         print("3. [Delete]   Remove a password")
         print("4. [Exit]     Back to Hub")
         print("-"*45)
@@ -60,23 +67,35 @@ def main():
 
         if choice == '1':
             new_pass = generate_password()
-            print(f"\n✨ Suggested Password: {new_pass}")
+            # We show it once during generation so you can see what it is
+            print(f"\n✨ New Password: {new_pass}")
+            copy_to_clipboard(new_pass)
+            print("📋 Copied to clipboard!")
+            
             confirm = input("Save this? (y/n): ").lower()
             if confirm == 'y':
-                label = input("Label (e.g., Discord, School): ").strip()
+                label = input("Label (e.g., Discord): ").strip()
                 lines.append(f"{label}:{new_pass}")
                 save_all_passwords(cipher, lines)
-                print(f"✅ Saved password for {label}!")
+                print(f"✅ Saved!")
         
         elif choice == '2':
-            print("\n--- YOUR SAVED PASSWORDS ---")
+            print("\n--- SAVED ACCOUNTS ---")
             if not lines:
                 print("Vault is empty.")
-            for line in lines:
-                label, pw = line.split(":")
-                print(f"{label:<15} | {pw}")
-            input("\nPress Enter to hide passwords...")
-            os.system('clear')
+            else:
+                for i, line in enumerate(lines):
+                    label, _ = line.split(":")
+                    print(f"{i+1}. {label}")
+                
+                pick = input("\nEnter number to copy password (or 'b' for back): ")
+                if pick.isdigit() and 1 <= int(pick) <= len(lines):
+                    selected_line = lines[int(pick)-1]
+                    label, pw = selected_line.split(":")
+                    copy_to_clipboard(pw)
+                    print(f"✅ Password for {label} copied to clipboard! (Ready to Paste)")
+                else:
+                    print("Returning...")
 
         elif choice == '3':
             target = input("Enter the label to delete: ").strip()
