@@ -5,6 +5,7 @@ __pycache__/
 codes.txt
 get_code.py
 use_code.py
+passwords.txt
 
 # Protect all hidden secret files
 .secrets/
